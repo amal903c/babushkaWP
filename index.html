@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>index</title>
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <nav>
+    <a href="index.html">forside</a>
+    <a href="menu.html">menu</a>
+    <a href="kontakt.html">kontakt</a>
+    <a href="om-os.html">om os</a>
+  </nav>
+  <div id="data_fill"></div>
+  <template>
+    <h2></h2>
+    <p></p>
+  </template>
+  <script>
+    let URLend = "pages?slug=velkommen";
+    let endpoint = `http://eigilnikolajsen.dk/kea/09_cms/babushkaWP/wordpress/wp-json/wp/v2/${URLend}`;
+    let retter = [];
+
+    document.addEventListener("DOMContentLoaded", start);
+
+    function start() {
+      console.log("start");
+      hentJSON();
+    }
+
+    async function hentJSON() {
+      console.log("hent json");
+
+      const response = await fetch(endpoint);
+      retter = await response.json();
+      visRetter();
+    }
+
+    function visRetter() {
+      console.log(retter);
+      let dataFill = document.querySelector("#data_fill");
+      let template = document.querySelector("template");
+
+      dataFill.textContent = "";
+
+      retter.forEach(element => {
+        let klon = template.cloneNode(true).content;
+        klon.querySelector("h2").innerHTML = `${element.title.rendered}`;
+        klon.querySelector("p").innerHTML = `${element.content.rendered}`;
+        dataFill.appendChild(klon);
+      });
+    }
+
+  </script>
+</body>
+
+</html>

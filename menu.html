@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>menu</title>
+  <link rel="stylesheet" href="">
+  <style>
+    img {
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <a href="index.html">forside</a>
+    <a href="menu.html">menu</a>
+    <a href="kontakt.html">kontakt</a>
+    <a href="om-os.html">om os</a>
+  </nav>
+  <h1>Retter</h1>
+  <div id="data_fill"></div>
+  <template>
+    <h2></h2>
+    <p></p>
+    <img src="" alt="">
+    <p class="ret_type"></p>
+    <p class="pris"></p>
+    <p class="oprindelse"></p>
+  </template>
+  <script>
+    let URLend = "ret";
+    let endpoint = `http://eigilnikolajsen.dk/kea/09_cms/babushkaWP/wordpress/wp-json/wp/v2/${URLend}`;
+    let retter = [];
+
+    document.addEventListener("DOMContentLoaded", start);
+
+    function start() {
+      console.log("start");
+      hentJSON();
+    }
+
+    async function hentJSON() {
+      console.log("hent json");
+
+      const response = await fetch(endpoint);
+      retter = await response.json();
+      visRetter();
+    }
+
+    function visRetter() {
+      console.log(retter);
+      let dataFill = document.querySelector("#data_fill");
+      let template = document.querySelector("template");
+
+      dataFill.textContent = "";
+
+      retter.forEach(element => {
+        let klon = template.cloneNode(true).content;
+        klon.querySelector("h2").innerHTML = `${element.title.rendered}`;
+        klon.querySelector("p").innerHTML = `${element.tags.kort_beskriv}`;
+        klon.querySelector("img").src = `${element.billede.guid}`;
+        klon.querySelector(".ret_type").innerHTML = `${element.rettype}`;
+        klon.querySelector(".pris").innerHTML = `${element.pris}`;
+        klon.querySelector(".oprindelse").innerHTML = `${element.oprindelse}`;
+        dataFill.appendChild(klon);
+      });
+    }
+  </script>
+</body></html>
